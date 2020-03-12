@@ -4,3 +4,9 @@ class InitError(Exception):
     An error occured during a class' initialization.
     """
     pass
+
+class AuthError(Exception):
+    """
+    An error occured when attempting to authorize.
+    """
+    pass
