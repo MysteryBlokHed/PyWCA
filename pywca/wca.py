@@ -3,7 +3,7 @@ import configparser
 import requests
 from bs4 import BeautifulSoup
 
-from .competition_min import *
+from .competition import *
 from .exceptions import *
 
 class WCA(object):
@@ -119,3 +119,57 @@ class WCA(object):
             comp_venue = str(list(comp_venue_div.strings)[1])
 
             yield CompetitionMin(comp_name, comp_url, comp_loc, comp_venue, comp_venue_url)
+
+    def detailed_competition_info(self, competition: CompetitionMin):
+        """
+        Get more detailed information on a competition.
+
+        `competition: CompetitionMin` - The competition to get more information on.
+        """
+        # Used to track optional fields
+        i = 3
+
+        # Check type
+        if isinstance(competition, CompetitionMin):
+            request_url = competition["url"]
+        else:
+            raise TypeError(f"Expected CompetitionMin for competition, got {type(competition).__name__}.")
+        
+        r = self._s.get(request_url, headers=self._headers)
+        soup = BeautifulSoup(r.content, "html.parser")
+
+        # Get competition data div
+        comp_general_data = soup.find("div", {"id": "general-info"}).find("div").find("div").find("dl")
+
+        # Get competition address & url
+        comp_addr = str(next(comp_general_data.findAll("dd")[i].strings))
+        comp_addr_url = comp_general_data.findAll("dd")[i].find("a").get("href")
+        i+=1
+
+        # Check if certain optional fields are present
+        if "Details" in comp_general_data.prettify():
+            i += 1
+        
+        # Get competition organizers
+        comp_organizers = str(next(comp_general_data.findAll("dd")[i].strings)).strip()
+        i+=1
+        
+        # Get WCA delegates
+        comp_delegates = "".join(list(comp_general_data.findAll("dd")[i].strings)).strip()
+        
+        # Get events, etc. div
+        comp_events_div = soup.find("div", {"id": "general-info"}).find("div").findAll("div")[1].findAll("dl")[1]
+        
+        # Get events
+        events = []
+        for event in comp_events_div.find("dd").findAll("span"):
+            events.append(event.get("title"))
+        
+        # Get main event (if the field is present)
+        try:
+            main_event = comp_events_div.findAll("dd")[1].find("span").get("title")
+        except IndexError:
+            main_event = None
+        
+        # Create Competition class
+        return Competition(competition["name"], competition["url"], competition["geo_location"], competition["venue"], comp_addr, comp_addr_url, comp_organizers, comp_delegates, events, main_event, competition["venue_site"])
