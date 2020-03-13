@@ -71,7 +71,7 @@ class WCA(object):
             if soup.find("div", {"class": "alert alert-danger alert-dismissible"}) is not None:
                 raise AuthError("Initial login failed.")
     
-    def get_competitions(self, region: str="all", search: str="", state: str="present", year: str="all years", from_date: str="", to_date: str="", delegate: str=""):
+    def get_competitions(self, region: str="all", search: str="", state: str="present", year: str="all years", from_date: str="", to_date: str="", delegate: int=""):
         """
         Get a list of competitions.
 
@@ -80,6 +80,14 @@ class WCA(object):
         `search: str` - A search term to filter by.
 
         `state: str` - Either `"present"` or `"recent"` depending on what competitions to view.
+
+        `year: str` - The year to search for.
+
+        `from_date: str` - The date to start search from for competitions. Must be formatted YYYY-MM-DD and `state` must be `"custom"`.
+
+        `from_date: str` - The date to end search at for competitions. Must be formatted YYYY-MM-DD and `state` must be `"custom"`.
+
+        `delegate: str` - The delegate of the competition. Must be an integer, although currently unsure of how the integer is generated. I recommend using the actual website, selecting the delegate and looking at the URL for the integer, then using it here.
         """
         # Request parameters
         params = {"utf8": "\u2713", "region": region, "search": search, "state": state, "year": year, "from_date": from_date, "to_date": to_date, "delegate": delegate, "display": "list"}
@@ -90,7 +98,7 @@ class WCA(object):
         soup = BeautifulSoup(r.content, "html.parser")
 
         # Iterate through competitions
-        for comp in soup.find("div", {"id": "upcoming-comps"}).find("ul").findAll("li", {"class": "not-past"}):
+        for comp in soup.find("div", {"id": "competitions-list"}).find("div").find("ul").findAll("li")[1:]:
             # Get competition info
             comp_info = comp.find("span", {"class": "competition-info"})
 
