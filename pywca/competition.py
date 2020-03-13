@@ -1,5 +1,18 @@
 # Created by Adam Thompson-Sharpe on 12/03/2020.
 class CompetitionMin(object):
+    """
+    A minimal Competition object.
+
+    `name: str` - The name of the competition.
+
+    `url: str` - The url of the competition on the WCA website.
+
+    `geo_location: str` - The city/country of the competition (eg. Columbus, Ohio, United States)
+
+    `venue: str` - The venue the competition is/was at.
+
+    `venue_site: str` - The website of the competition venue (NOT the address map link)
+    """
     def __init__(self, name: str, url: str, geo_location: str, venue: str, venue_site: str=None):
         # Check types
         if type(name) is not str:
@@ -31,8 +44,35 @@ class CompetitionMin(object):
             return self._venue
         elif key == "venue_site":
             return self._venue_site
+        else:
+            raise KeyError(key)
 
 class Competition(object):
+    """
+    A detailed Competition object.
+
+    `name: str` - The name of the competition.
+
+    `url: str` - The url of the competition on the WCA website.
+
+    `geo_location: str` - The city/country of the competition (eg. Columbus, Ohio, United States)
+
+    `venue: str` - The venue the competition is/was at.
+
+    `address: str` - The address of the venue for the competition.
+
+    `address_map_link: str` - The Google Maps link to the address.
+
+    `organizers: str` - The organizers of the competition (eg. `"John Doe, Jack Doe and Jack"`, `"Lorem Ipsum"`)
+
+    `delegates: str` - The WCA delegates at the competition (eg. `"John Doe, Jack Doe and Jack"`, `"Lorem Ipsum"`)
+
+    `events: list` - The events at the competition (eg. `["3x3x3 Cube", "3x3x3 Blindfolded"]`)
+
+    `main_event: str` - The main event at the competition (if one is listed) (eg. `"3x3x3 Cube"`)
+
+    `venue_site: str` - The website of the competition venue (NOT the address map link)
+    """
     def __init__(self, name: str, url: str, geo_location: str, venue: str, address: str, address_map_link: str, organizers: str, delegates: str, events: list, main_event: str=None, venue_site: str=None):
         # Check types
         if type(name) is not str:
@@ -94,3 +134,5 @@ class Competition(object):
             return self._main_event
         elif key == "venue_site":
             return self._venue_site
+        else:
+            raise KeyError(key)

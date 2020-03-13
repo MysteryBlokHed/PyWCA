@@ -98,27 +98,28 @@ class WCA(object):
         soup = BeautifulSoup(r.content, "html.parser")
 
         # Iterate through competitions
-        for comp in soup.find("div", {"id": "competitions-list"}).find("div").find("ul").findAll("li")[1:]:
-            # Get competition info
-            comp_info = comp.find("span", {"class": "competition-info"})
+        for comp_list in soup.find("div", {"id": "competitions-list"}).findAll("div", {"class": "col-md-12"}):
+          for comp in comp_list.find("ul").findAll("li")[1:]:
+              # Get competition info
+              comp_info = comp.find("span", {"class": "competition-info"})
 
-            # Get competition name/url
-            comp_a = comp_info.find("div", {"class": "competition-link"}).find("a")
-            comp_name = str(next(comp_a.strings))
-            comp_url = "https://www.worldcubeassociation.org" + comp_a.get("href")
+              # Get competition name/url
+              comp_a = comp_info.find("div", {"class": "competition-link"}).find("a")
+              comp_name = str(next(comp_a.strings))
+              comp_url = "https://www.worldcubeassociation.org" + comp_a.get("href")
 
-            # Get competition location
-            comp_loc = "".join(list(comp_info.find("div", {"class": "location"}).strings)[1:3]).strip()
-            
-            # Get venue
-            comp_venue_div = comp_info.find("div", {"class": "venue-link"})
-            comp_venue_url = None
-            if comp_venue_div.find("a") is not None:
-                comp_venue_url = comp_venue_div.find("a").get("href")
-            
-            comp_venue = str(list(comp_venue_div.strings)[1])
+              # Get competition location
+              comp_loc = "".join(list(comp_info.find("div", {"class": "location"}).strings)[1:3]).strip()
+              
+              # Get venue
+              comp_venue_div = comp_info.find("div", {"class": "venue-link"})
+              comp_venue_url = None
+              if comp_venue_div.find("a") is not None:
+                  comp_venue_url = comp_venue_div.find("a").get("href")
+              
+              comp_venue = str(list(comp_venue_div.strings)[1])
 
-            yield CompetitionMin(comp_name, comp_url, comp_loc, comp_venue, comp_venue_url)
+              yield CompetitionMin(comp_name, comp_url, comp_loc, comp_venue, comp_venue_url)
 
     def detailed_competition_info(self, competition: CompetitionMin):
         """
@@ -147,7 +148,7 @@ class WCA(object):
         i+=1
 
         # Check if certain optional fields are present
-        if "Details" in comp_general_data.prettify():
+        if "Details" in str(comp_general_data):
             i += 1
         
         # Get competition organizers
