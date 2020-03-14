@@ -119,7 +119,10 @@ class WCA(object):
               
               comp_venue = str(list(comp_venue_div.strings)[1])
 
-              yield CompetitionMin(comp_name, comp_url, comp_loc, comp_venue, comp_venue_url)
+              # Get date
+              comp_date = "".join(list(comp.find("span", {"class": "date"}).strings)).strip()
+
+              yield CompetitionMin(comp_name, comp_url, comp_loc, comp_venue, comp_date, comp_venue_url)
 
     def detailed_competition_info(self, competition: CompetitionMin):
         """
@@ -173,4 +176,4 @@ class WCA(object):
             main_event = None
         
         # Create Competition class
-        return Competition(competition["name"], competition["url"], competition["geo_location"], competition["venue"], comp_addr, comp_addr_url, comp_organizers, comp_delegates, events, main_event, competition["venue_site"])
+        return Competition(competition["name"], competition["url"], competition["geo_location"], competition["venue"], competition["date"], comp_addr, comp_addr_url, comp_organizers, comp_delegates, events, main_event, competition["venue_site"])

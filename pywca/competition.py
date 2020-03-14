@@ -11,9 +11,11 @@ class CompetitionMin(object):
 
     `venue: str` - The venue the competition is/was at.
 
+    `date: str` - The date of the competition, formatted as Month Day, Year, or Month Day - Day, Year (eg. Mar 14, 2020, Mar 13 - 15, 2020)
+
     `venue_site: str` - The website of the competition venue (NOT the address map link)
     """
-    def __init__(self, name: str, url: str, geo_location: str, venue: str, venue_site: str=None):
+    def __init__(self, name: str, url: str, geo_location: str, venue: str, date: str, venue_site: str=None):
         # Check types
         if type(name) is not str:
             raise TypeError(f"Expected str for name, got {type(name).__name__}.")
@@ -23,6 +25,8 @@ class CompetitionMin(object):
             raise TypeError(f"Expected str for geo_location, got {type(geo_location).__name__}.")
         if type(venue) is not str:
             raise TypeError(f"Expected str for venue, got {type(venue).__name__}.")
+        if type(date) is not str:
+            raise TypeError(f"Expected str for date, got {type(date).__name__}.")
         if type(venue_site) not in (str, type(None)):
             raise TypeError(f"Expected str for venue_site, got {type(venue_site).__name__}.")
         
@@ -31,6 +35,7 @@ class CompetitionMin(object):
         self._url = url
         self._geo_location = geo_location
         self._venue = venue
+        self._date = date
         self._venue_site = venue_site
 
     def __getitem__(self, key: str):
@@ -42,6 +47,8 @@ class CompetitionMin(object):
             return self._geo_location
         elif key == "venue":
             return self._venue
+        elif key == "date":
+            return self._date
         elif key == "venue_site":
             return self._venue_site
         else:
@@ -59,6 +66,8 @@ class Competition(object):
 
     `venue: str` - The venue the competition is/was at.
 
+    `date: str` - The date of the competition, formatted as Month Day, Year, or Month Day - Day, Year (eg. Mar 14, 2020, Mar 13 - 15, 2020)
+
     `address: str` - The address of the venue for the competition.
 
     `address_map_link: str` - The Google Maps link to the address.
@@ -73,7 +82,7 @@ class Competition(object):
 
     `venue_site: str` - The website of the competition venue (NOT the address map link)
     """
-    def __init__(self, name: str, url: str, geo_location: str, venue: str, address: str, address_map_link: str, organizers: str, delegates: str, events: list, main_event: str=None, venue_site: str=None):
+    def __init__(self, name: str, url: str, geo_location: str, venue: str, date: str, address: str, address_map_link: str, organizers: str, delegates: str, events: list, main_event: str=None, venue_site: str=None):
         # Check types
         if type(name) is not str:
             raise TypeError(f"Expected str for name, got {type(name).__name__}.")
@@ -83,6 +92,8 @@ class Competition(object):
             raise TypeError(f"Expected str for geo_location, got {type(geo_location).__name__}.")
         if type(venue) is not str:
             raise TypeError(f"Expected str for venue, got {type(venue).__name__}.")
+        if type(date) is not str:
+            raise TypeError(f"Expected str for date, got {type(date).__name__}.")
         if type(address) is not str:
             raise TypeError(f"Expected str for address, got {type(address).__name__}.")
         if type(address_map_link) is not str:
@@ -103,6 +114,7 @@ class Competition(object):
         self._url = url
         self._geo_location = geo_location
         self._venue = venue
+        self._date = date
         self._address = address
         self._address_map_link = address_map_link
         self._organizers = organizers
@@ -120,6 +132,8 @@ class Competition(object):
             return self._geo_location
         elif key == "venue":
             return self._venue
+        elif key == "date":
+            return self._date
         elif key == "address":
             return self._address
         elif key == "address_map_link":
